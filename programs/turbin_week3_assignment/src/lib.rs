@@ -15,7 +15,7 @@ declare_id!("JCxTbX93MmTzffYDKdF9AGJ4BDsKoXm1aER16jDRmyR7");
 pub mod turbin_week3_assignment {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        initialize::handler(ctx)
+    pub fn initialize(ctx: Context<Initialize>,  fee: u16, seed: u64, authority: Option<Pubkey>) -> Result<()> {
+        initialize::initialize(ctx,  fee, seed, authority)
     }
 }
