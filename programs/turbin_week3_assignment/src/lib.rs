@@ -18,4 +18,8 @@ pub mod turbin_week3_assignment {
     pub fn initialize(ctx: Context<Initialize>,  fee: u16, seed: u64, authority: Option<Pubkey>) -> Result<()> {
         initialize::initialize(ctx,  fee, seed, authority)
     }
+
+    pub fn deposit(ctx: Context<Deposit>, amount: u64, max_x: u64, max_y: u64) -> Result<()> {
+        deposit::deposit(ctx, amount, max_x, max_y)
+    }
 }
