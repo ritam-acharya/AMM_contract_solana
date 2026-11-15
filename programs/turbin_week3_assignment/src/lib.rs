@@ -22,4 +22,8 @@ pub mod turbin_week3_assignment {
     pub fn deposit(ctx: Context<Deposit>, amount: u64, max_x: u64, max_y: u64) -> Result<()> {
         deposit::deposit(ctx, amount, max_x, max_y)
     }
+
+    pub fn withdraw(ctx: Context<Withdraw>, amount: u64, min_x: u64, min_y: u64) -> Result<()> {
+        withdraw::withdraw(ctx, amount, min_x, min_y)
+    }
 }
