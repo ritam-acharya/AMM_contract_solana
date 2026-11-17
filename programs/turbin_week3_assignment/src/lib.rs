@@ -26,4 +26,8 @@ pub mod turbin_week3_assignment {
     pub fn withdraw(ctx: Context<Withdraw>, amount: u64, min_x: u64, min_y: u64) -> Result<()> {
         withdraw::withdraw(ctx, amount, min_x, min_y)
     }
+
+    pub fn swap(ctx: Context<Swap>, is_x: bool, amount: u64, min: u64) -> Result<()> {
+        swap::swap(ctx, is_x, amount, min)
+    }
 }
