@@ -5,7 +5,8 @@ use anchor_spl::{
     associated_token::AssociatedToken,
     token::{transfer, Mint, Token, TokenAccount, Transfer},
 };
-use constant_product_curve::{ConstantProduct, LiquidityPair};
+use crate::ConstantProduct;
+use crate::LiquidityPair;
 
 #[derive(Accounts)]
 pub struct Swap<'info> {
@@ -18,21 +19,21 @@ pub struct Swap<'info> {
         seeds = [b"lp", config.key().as_ref()],
         bump = config.lp_bump
     )]
-    pub lp_mint: Account<'info, Mint>,
+    pub lp_mint: Box<Account<'info, Mint>>,
     // vault x account
     #[account(
         mut,
         associated_token::mint = mint_x,
         associated_token::authority = config
     )]
-    pub vault_x: Account<'info, TokenAccount>,
+    pub vault_x: Box<Account<'info, TokenAccount>>,
     // vault y account
     #[account(
         mut,
         associated_token::mint = mint_y,
         associated_token::authority = config
     )]
-    pub vault_y: Account<'info, TokenAccount>,
+    pub vault_y: Box<Account<'info, TokenAccount>>,
     // config account pda
     #[account(
         has_one = mint_x,
@@ -40,22 +41,22 @@ pub struct Swap<'info> {
         seeds = [b"config", config.seed.to_le_bytes().as_ref()],
         bump = config.config_bump
     )]
-    pub config: Account<'info, Config>,
+    pub config: Box<Account<'info, Config>>,
     // mint x account
-    pub mint_x: Account<'info, Mint>,
+    pub mint_x: Box<Account<'info, Mint>>,
     // mint y account
-    pub mint_y: Account<'info, Mint>,
+    pub mint_y: Box<Account<'info, Mint>>,
     // user x account
-    pub user_x: Account<'info, TokenAccount>,
+    pub user_x: Box<Account<'info, TokenAccount>>,
     // user y account
-    pub user_y: Account<'info, TokenAccount>,
+    pub user_y: Box<Account<'info, TokenAccount>>,
     // user lp account
     #[account(
         mut,
         associated_token::mint = lp_mint,
         associated_token::authority = signer
     )]
-    pub user_lp: Account<'info, TokenAccount>,
+    pub user_lp: Box<Account<'info, TokenAccount>>,
     // system account
     pub system_program: Program<'info, System>,
     // token account
@@ -80,9 +81,7 @@ pub fn swap(ctx: Context<Swap>, is_x: bool, amount: u64, min: u64) -> Result<()>
         false => LiquidityPair::Y,
     };
     
-    let swap_result: constant_product_curve::SwapResult = curve
-        .swap(p, amount, min)
-        .map_err(|_| ErrorCode::SlippageExceeded)?;
+    let swap_result = curve.swap(p, amount, min)?;
 
     deposit_token(&ctx, swap_result.deposit, is_x)?;
     withdraw_token(&ctx, swap_result.withdraw, is_x)?;

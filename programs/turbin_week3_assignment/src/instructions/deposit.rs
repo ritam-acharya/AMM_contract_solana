@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken,
     token::{mint_to, transfer, Mint, MintTo, Token, TokenAccount, Transfer},
 };
-use constant_product_curve::ConstantProduct;
+use crate::ConstantProduct;
 
 use crate::Config;
 use crate::error::ErrorCode;
@@ -13,9 +13,9 @@ pub struct Deposit<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
     // mint x account
-    pub mint_x: Account<'info, Mint>,
+    pub mint_x: Box<Account<'info, Mint>>,
     // mint y account
-    pub mint_y: Account<'info, Mint>,
+    pub mint_y: Box<Account<'info, Mint>>,
     // config account pda
     #[account(
         seeds = [b"config", config.seed.to_le_bytes().as_ref()],
@@ -23,28 +23,28 @@ pub struct Deposit<'info> {
         has_one = mint_x,
         has_one = mint_y
     )]
-    pub config: Account<'info, Config>,
+    pub config: Box<Account<'info, Config>>,
     // lp mint account
     #[account(
         mut,
         seeds = [b"lp", config.key().as_ref()],
         bump = config.lp_bump
     )]
-    pub lp_mint: Account<'info, Mint>,
+    pub lp_mint: Box<Account<'info, Mint>>,
     // vault x account pda
     #[account(
         mut,
         associated_token::mint = mint_x,
         associated_token::authority = config
     )]
-    pub vault_x: Account<'info, TokenAccount>,
+    pub vault_x: Box<Account<'info, TokenAccount>>,
     // vault y account pda
     #[account(
         mut,
         associated_token::mint = mint_y,
         associated_token::authority = config
     )]
-    pub vault_y: Account<'info, TokenAccount>,
+    pub vault_y: Box<Account<'info, TokenAccount>>,
     // user lp account
     #[account(
         init_if_needed,
@@ -52,21 +52,21 @@ pub struct Deposit<'info> {
         associated_token::mint = lp_mint,
         associated_token::authority = signer
     )]
-    pub user_lp: Account<'info, TokenAccount>,
+    pub user_lp: Box<Account<'info, TokenAccount>>,
     // user x ata account
     #[account(
         mut,
         associated_token::mint = mint_x,
         associated_token::authority = signer
     )]
-    pub user_x: Account<'info, TokenAccount>,
+    pub user_x: Box<Account<'info, TokenAccount>>,
     // user y ata account
     #[account(
         mut,
         associated_token::mint = mint_y,
         associated_token::authority = signer
     )]
-    pub user_y: Account<'info, TokenAccount>,
+    pub user_y: Box<Account<'info, TokenAccount>>,
     // system program
     pub system_program: Program<'info, System>,
     // token program

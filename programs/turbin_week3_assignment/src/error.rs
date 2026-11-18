@@ -10,4 +10,10 @@ pub enum ErrorCode {
     PoolLocked,
     #[msg("Slippage Exceeded")]
     SlippageExceeded,
+    #[msg("Value overflowed")]
+    Overflow,
+    #[msg("Invalid Precision")]
+    InvalidPrecision,
+    #[msg("Value underflowed")]
+    Underflow,
 }

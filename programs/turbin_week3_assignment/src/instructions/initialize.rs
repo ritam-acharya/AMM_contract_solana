@@ -21,7 +21,7 @@ pub struct Initialize<'info> {
         bump,
         space = Config::DISCRIMINATOR.len() + Config::INIT_SPACE
     )]
-    pub config: Account<'info, Config>,
+    pub config: Box<Account<'info, Config>>,
     // lp mint account pda
     #[account(
         init,
@@ -31,11 +31,11 @@ pub struct Initialize<'info> {
         mint::decimals = 6,
         mint::authority = config
     )]
-    pub lp_mint: Account<'info, Mint>,
+    pub lp_mint: Box<Account<'info, Mint>>,
     // mint x account
-    pub mint_x: Account<'info, Mint>,
+    pub mint_x: Box<Account<'info, Mint>>,
     // mint y account
-    pub mint_y: Account<'info, Mint>,
+    pub mint_y: Box<Account<'info, Mint>>,
     // vault x account pda
     #[account(
         init,
@@ -43,7 +43,7 @@ pub struct Initialize<'info> {
         associated_token::mint = mint_x,
         associated_token::authority = config
     )]
-    pub vault_x: Account<'info, TokenAccount>,
+    pub vault_x: Box<Account<'info, TokenAccount>>,
     // vault y account pda
     #[account(
         init,
@@ -51,7 +51,7 @@ pub struct Initialize<'info> {
         associated_token::mint = mint_y,
         associated_token::authority = config
     )]
-    pub vault_y: Account<'info, TokenAccount>,
+    pub vault_y: Box<Account<'info, TokenAccount>>,
     // System program
     pub system_program: Program<'info, System>,
     // Token program
